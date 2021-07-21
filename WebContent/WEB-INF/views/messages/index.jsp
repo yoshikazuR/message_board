@@ -14,7 +14,7 @@
             </c:forEach>
         </ul>
         <p>
-            <a href="${pageCOntext.request.contextPath}/new">新規メッセージ</a>
+            <a href="${pageContext.request.contextPath}/new">新規メッセージ</a>
         </p>
     </c:param>
 </c:import>
