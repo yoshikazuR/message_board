@@ -6,7 +6,7 @@
 <br />
 <br />
 
-<label for="content">メッサージ</label>
+<label for="content">メッセージ</label>
 <br />
 <input type="text" name="content" value="${message.content }" />
 <br />
