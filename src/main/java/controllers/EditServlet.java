@@ -31,7 +31,8 @@ public class EditServlet extends HttpServlet {
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         EntityManager em = DBUtil.createEntityManager();
 
         Message m = em.find(Message.class, Integer.valueOf(request.getParameter("id")));
@@ -39,7 +40,9 @@ public class EditServlet extends HttpServlet {
 
         request.setAttribute("message", m);
         request.setAttribute("_token", request.getSession().getId());
-        request.getSession().setAttribute("message_id", m.getId());
+        if (m != null) {
+            request.getSession().setAttribute("message_id", m.getId());
+        }
 
         RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/messages/edit.jsp");
         rd.forward(request, response);
