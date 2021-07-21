@@ -32,16 +32,32 @@ public class IndexServlet extends HttpServlet {
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         EntityManager em = DBUtil.createEntityManager();
 
-        List<Message> messages = em.createNamedQuery("getAllMessages", Message.class).getResultList();
-        response.getWriter().append(Integer.valueOf(messages.size()).toString());
+        int page = 1;
+        try {
+            page = Integer.parseInt(request.getParameter("page"));
+        } catch (NumberFormatException e) {
+        }
+
+        // 最大件数と開始位置を指定してメッセージを取得
+        List<Message> messages = em.createNamedQuery("getAllMessages", Message.class)
+                .setFirstResult(15 * (page - 1))
+                .setMaxResults(15)
+                .getResultList();
+
+        // 全件数を取得
+        long messages_count = (long) em.createNamedQuery("getMessagesCount", Long.class)
+                .getSingleResult();
 
         em.close();
 
         request.setAttribute("messages", messages);
-        if(request.getSession().getAttribute("flush") != null) {
+        request.setAttribute("messages_count", messages_count); // 全件数
+        request.setAttribute("page", page);
+        if (request.getSession().getAttribute("flush") != null) {
             request.setAttribute("flush", request.getSession().getAttribute("flush"));
             request.getSession().removeAttribute("flush");
         }
@@ -49,6 +65,5 @@ public class IndexServlet extends HttpServlet {
         rd.forward(request, response);
 
     }
-
 
 }
